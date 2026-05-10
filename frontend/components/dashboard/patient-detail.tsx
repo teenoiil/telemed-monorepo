@@ -606,6 +606,7 @@ export function PatientDetailContent({ patientId }: PatientDetailContentProps) {
 
   const [vitalsTrends, setVitalsTrends] = useState<VitalTrendDataPoint[]>([]);
   const [loadingVitalsTrends, setLoadingVitalsTrends] = useState(true);
+  const [refreshingVitals, setRefreshingVitals] = useState(false);
   const [realtimeStatus, setRealtimeStatus] = useState<PatientRealtimeStatus>("connecting");
   const [lastRealtimeSyncAt, setLastRealtimeSyncAt] = useState<Date | null>(null);
   const hasLoadedVitalsTrendsRef = React.useRef(false);
@@ -657,6 +658,7 @@ export function PatientDetailContent({ patientId }: PatientDetailContentProps) {
     setPressureReadingsError(null);
     setVitalsTrends([]);
     setLoadingVitalsTrends(true);
+    setRefreshingVitals(false);
     hasLoadedVitalsTrendsRef.current = false;
     setRealtimeStatus("connecting");
     setLastRealtimeSyncAt(null);
@@ -761,11 +763,14 @@ export function PatientDetailContent({ patientId }: PatientDetailContentProps) {
   );
 
   const refreshRealtimeVitals = React.useCallback(
-    (options: { includePressure?: boolean } = {}) => {
+    (options: { includePressure?: boolean; manual?: boolean } = {}) => {
       if (typeof document !== "undefined" && document.visibilityState !== "visible") {
         return;
       }
 
+      if (options.manual) {
+        setRefreshingVitals(true);
+      }
       if (options.includePressure ?? false) {
         void loadPressureReadings({ showLoading: false });
       }
@@ -1049,17 +1054,10 @@ export function PatientDetailContent({ patientId }: PatientDetailContentProps) {
         const res = await fetchPatientVitalsTrends(patientId, 30, token);
         if (!cancelled) {
           if (res.trends.length > 0) {
-            setVitalsTrends((current) =>
-              current.reduce(
-                (merged, trendPoint) => mergeVitalTrendPoint(merged, trendPoint),
-                res.trends
-              )
-            );
+            setVitalsTrends(res.trends);
           } else {
             // Fall back to sample data so doctors can preview the chart
-            setVitalsTrends((current) =>
-              current.length > 0 ? current : buildMockVitalsTrends()
-            );
+            setVitalsTrends(buildMockVitalsTrends());
           }
           hasLoadedVitalsTrendsRef.current = true;
         }
@@ -1077,7 +1075,10 @@ export function PatientDetailContent({ patientId }: PatientDetailContentProps) {
           }
         }
       } finally {
-        if (!cancelled) setLoadingVitalsTrends(false);
+        if (!cancelled) {
+          setLoadingVitalsTrends(false);
+          setRefreshingVitals(false);
+        }
       }
     };
 
@@ -1899,6 +1900,19 @@ export function PatientDetailContent({ patientId }: PatientDetailContentProps) {
               <Clock3 className="size-3.5" />
               <span>{realtimeSyncLabel}</span>
             </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="min-h-8 rounded-full px-3 text-xs font-medium shadow-sm"
+              onClick={() => refreshRealtimeVitals({ includePressure: true, manual: true })}
+              disabled={refreshingVitals}
+            >
+              <RefreshCcw className={cn("mr-1.5 size-3.5", refreshingVitals && "animate-spin")} />
+              {refreshingVitals
+                ? tr(language, "Syncing", "กำลังซิงก์")
+                : tr(language, "Sync now", "ซิงก์ตอนนี้")}
+            </Button>
           </div>
           <VitalsTrendChart
             patientId={patientId}

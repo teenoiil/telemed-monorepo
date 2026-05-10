@@ -1,3 +1,4 @@
+import logging
 from datetime import UTC, datetime
 from typing import Optional
 from uuid import UUID
@@ -6,6 +7,9 @@ from sqlalchemy.orm import Session
 
 from app.core.logging_config import redact_sensitive_data
 from app.models.audit_log import AuditLog
+
+
+logger = logging.getLogger(__name__)
 
 
 def _audit_log_payload(entry: AuditLog) -> dict[str, str | None]:

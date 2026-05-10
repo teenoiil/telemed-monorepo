@@ -966,6 +966,11 @@ export interface WeightRecord {
   bmi: number | null;
 }
 
+export interface WeightRecordPayload {
+  weight_kg: number;
+  height_cm?: number | null;
+}
+
 export interface WeightRecordListResponse {
   items: WeightRecord[];
   total: number;
