@@ -201,11 +201,11 @@ function CustomTooltip({
   payload,
   label,
   t,
-}: TooltipProps<number, string> & { t: (typeof I18N)[AppLanguage] }) {
+}: any) {
   if (!active || !payload?.length) return null;
 
-  const patientsData = payload.find((p) => p.dataKey === "new_patients");
-  const consultationsData = payload.find((p) => p.dataKey === "consultations");
+  const patientsData = payload.find((p: any) => p.dataKey === "new_patients");
+  const consultationsData = payload.find((p: any) => p.dataKey === "consultations");
   const patients = patientsData?.value || 0;
   const consultations = consultationsData?.value || 0;
 

@@ -292,7 +292,7 @@ function CustomTooltip({
   payload,
   label,
   language,
-}: TooltipProps<number, string> & { language: AppLanguage }) {
+}: any) {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-popover border border-border rounded-lg p-2 sm:p-3 shadow-lg">
@@ -300,7 +300,7 @@ function CustomTooltip({
         {label}
       </p>
       <div className="space-y-1 sm:space-y-1.5">
-        {payload.map((entry) => (
+        {payload.map((entry: any) => (
           <div key={`${entry.name ?? "metric"}-${entry.dataKey ?? "value"}-${entry.color ?? "default"}`} className="flex items-center gap-1.5 sm:gap-2">
             <div
               className="size-2 sm:size-2.5 rounded-full"
