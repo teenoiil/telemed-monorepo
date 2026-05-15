@@ -243,7 +243,7 @@ function DeviceErrorTooltip({
     <div className="rounded-lg border border-border bg-popover p-3 shadow-lg">
       <p className="mb-2 text-sm font-medium text-foreground">{label}</p>
       <div className="space-y-1.5">
-        {payload.map((entry) => (
+        {payload.map((entry: any) => (
           <div
             key={`${entry.name ?? "metric"}-${entry.dataKey ?? "value"}-${entry.color ?? "default"}`}
             className="flex items-center gap-2"
