@@ -816,27 +816,31 @@ function UsersByRoleChart({ users, language }: { users: User[]; language: AppLan
         <div className="relative shrink-0 size-[220px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              {/* @ts-ignore - recharts v3.8.1 Pie types are missing activeIndex */}
-              <Pie
-                data={roleData}
-                cx="50%"
-                cy="50%"
-                innerRadius="42%"
-                outerRadius="70%"
-                paddingAngle={2}
-                dataKey="value"
-                strokeWidth={0}
-                activeIndex={
-                  activeIndex !== null ? activeIndex : undefined
-                }
-                activeShape={renderActiveShape}
-                onMouseEnter={onPieEnter}
-                onMouseLeave={onPieLeave}
-              >
-                {roleData.map((entry) => (
-                  <Cell key={entry.name} fill={entry.color} />
-                ))}
-              </Pie>
+              {(() => {
+                const AnyPie: any = Pie;
+                return (
+                  <AnyPie
+                    data={roleData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius="42%"
+                    outerRadius="70%"
+                    paddingAngle={2}
+                    dataKey="value"
+                    strokeWidth={0}
+                    activeIndex={
+                      activeIndex !== null ? activeIndex : undefined
+                    }
+                    activeShape={renderActiveShape}
+                    onMouseEnter={onPieEnter}
+                    onMouseLeave={onPieLeave}
+                  >
+                    {roleData.map((entry) => (
+                      <Cell key={entry.name} fill={entry.color} />
+                    ))}
+                  </AnyPie>
+                );
+              })()}
             </PieChart>
           </ResponsiveContainer>
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
