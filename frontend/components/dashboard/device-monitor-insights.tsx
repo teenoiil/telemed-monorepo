@@ -236,7 +236,7 @@ function DeviceErrorTooltip({
   payload,
   label,
   language,
-}: TooltipProps<number, string> & { language: AppLanguage }) {
+}: any) {
   if (!active || !payload?.length) return null;
 
   return (
