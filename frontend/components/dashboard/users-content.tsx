@@ -816,6 +816,7 @@ function UsersByRoleChart({ users, language }: { users: User[]; language: AppLan
         <div className="relative shrink-0 size-[220px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
+              {/* @ts-ignore - recharts v3.8.1 Pie types are missing activeIndex */}
               <Pie
                 data={roleData}
                 cx="50%"
